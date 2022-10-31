@@ -1,0 +1,138 @@
+
+通用状态管理组件
+zero-system-progress
+
+
+ProgerssDto:{
+    key:string
+}
+
+
+/**
+*  使用 redis 管理状态
+*  完成后设置一个自动销毁时间（24小时），新的立即替代旧的。
+*/
+Progress
+{	
+	key:标识
+	
+	// 三种状态:state
+	state:{
+		success:已完成,
+		doing:进行中,
+		failure:已失败,
+		message:消息
+	}
+	
+	// 进度：progress
+	progress：0.00-1.00
+	
+
+	start() 开始
+	stop() 取消
+}
+
+接口地址：
+// 获取状态的接口
+http://api/zero-system-progress/state/:key
+返回：
+{	
+	key:标识
+	
+	// 三种状态:state
+	state:{
+		success:已完成,
+		doing:进行中,
+		failure:已失败,
+		canceled:已失败,
+		message:消息
+	}
+	
+	// 进度：progress
+	progress：0.00-1.00
+	
+
+	setProgress(v:number) 开始
+	stop() 取消
+    done() 完成{
+        把 progress 设置为 1
+    }
+}
+
+	
+// 后端用法
+
+UploadDto extend ProgerssDto:{
+    name:'',
+    age:'',
+    file:File,
+}
+
+
+exampleUpload(UploadDto dto)
+
+
+// 创建一个Progerss
+let key = dto.key
+let p = new Progess({
+    key:key,
+})
+
+val file = dto.file
+	
+	
+for(i, 100 ,i++){
+
+    if(p.canceled){
+        throw err
+    }
+    p.setProgress(i/100)
+
+}    
+	
+
+
+p.done()
+
+    
+ 
+
+<zero-system-progress  />
+
+设有定时器，1秒，定时刷新接口。
+
+props:{
+    visible: bool,
+   
+    key:'plan-upload'，（需要key去掉接口，查询状态）
+    onProgress:(v:Progress)=>void,
+    onSuccess:(v:Progress)=>void,
+    onFailure:(v:Progress)=>void,
+    onCanceled:(v:Progress)=>void,
+
+    onClick:()=void,
+    titleRender:(v:Progress)=>string,
+    ref:.... (forwardRef)
+}
+
+const {progress,setProgress} = <Progress>()
+
+
+方法：
+start(){
+
+}
+
+
+
+出资渲染，掉接口查询状态
+useEffect(()=>{
+
+},[])
+
+
+状态：
+未开始：【开始】
+已开始：【进行中 2% （导入构件 001....）】
+已完成：【开始】            （消息提示 message 组件提示） 
+已失败：【开始】            （消息提示 message 导入构件 001.... 已存在）
